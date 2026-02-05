@@ -14,12 +14,12 @@ A BDD is ordered (<b>OBDD</b>) if different variables appears in the same order 
 ## How to build a BDD from a formula?
 ### BDD for A AND B
 Here is an example of a BDD for the formula <code>f = A && B</code>
-
+<img src="img/A&B.png">
 
 ### BDD for A OR B
 Here is an example of a BDD for the formula <code>f = A || B</code>
-
+<img src="img/A_B.png">
 
 ### BDD for A XOR B
 Here is an example of a BDD for the formula <code>f = A | B</code>, therefore is a XOR between A and B.
-
+<img src="img/AXORB.png">
