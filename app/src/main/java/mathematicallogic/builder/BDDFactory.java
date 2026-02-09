@@ -2,14 +2,68 @@ package src.main.java.mathematicallogic.builder;
 
 import src.main.java.mathematicallogic.bdd.BDDNode;
 import src.main.java.mathematicallogic.formula.Formula;
+import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
 
+import java.util.Comparator;
+
 public class BDDFactory {
+
+    private static Comparator<String> LEXICOGRAPHIC = Comparator.comparing(String::toString) ;
 
     public static BDDNode ast_to_bdd(Formula f) {
         if (f instanceof Var) {
             return new BDDNode(((Var) f).getName(), new BDDNode(false), new BDDNode(true)) ;
+        } else if (f instanceof Or) {
+            Or or = (Or) f ;
+            Formula left = or.getLeft() ;
+            Formula right = or.getRight() ;
+            BDDNode low = BDDFactory.ast_to_bdd(left) ;
+            BDDNode high = BDDFactory.ast_to_bdd(right) ;
+            return apply_or(low, high) ;
         }
+
         return null ;
     }
+
+    private static BDDNode apply_or(BDDNode u, BDDNode v) {
+        if (u.isLeaf() && v.isLeaf()) {
+            return new BDDNode(
+                    u.getValue() || v.getValue()
+            );
+        }
+        String x ;
+        if (u.isLeaf()) x = v.getVar() ;
+        else if (v.isLeaf()) x = u.getVar() ;
+        else x = min_var(u.getVar(), v.getVar()) ;
+
+        BDDNode u_low = cofactor_low(u, x) ;
+        BDDNode u_high = cofactor_high(u, x) ;
+
+        BDDNode v_low  = cofactor_low(v, x) ;
+        BDDNode v_high = cofactor_high(v, x) ;
+
+        BDDNode low = apply_or(u_low, v_low) ;
+        BDDNode high = apply_or(u_high, v_high) ;
+
+        if (low.equals(high)) return low ;
+
+        return new BDDNode(x, low, high) ;
+
+    }
+
+    private static BDDNode cofactor_low(BDDNode node, String x) {
+        if (node.isLeaf()) return node ;
+        if (node.getVar().equals(x)) return node.getLow() ;
+        return node ;
+    }
+
+    private static BDDNode cofactor_high(BDDNode node, String x) {
+        if (node.isLeaf()) return node ;
+        if (node.getVar().equals(x)) return node.getHigh() ;
+        return node ;
+    }
+
+    private static String min_var(String v1, String v2) { return LEXICOGRAPHIC.compare(v1, v2) <= 0 ? v1 : v2 ; }
+
 }
