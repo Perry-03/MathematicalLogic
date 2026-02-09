@@ -14,7 +14,7 @@ public class BDDNode {
     }
 
     public boolean getValue() { return value ; }
-    public String getVar() { return "b" ; }
+    public String getVar() { return vName ; }
     public BDDNode getLow() { return low ; }
     public BDDNode getHigh() { return high ; }
 }
