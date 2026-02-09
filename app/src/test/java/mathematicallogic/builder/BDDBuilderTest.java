@@ -5,11 +5,13 @@ import org.junit.Test;
 import src.main.java.mathematicallogic.bdd.BDDNode;
 import src.main.java.mathematicallogic.builder.BDDFactory;
 import src.main.java.mathematicallogic.formula.Formula;
+import src.main.java.mathematicallogic.formula.Not;
 import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
 
 public class BDDBuilderTest {
-    Formula or = new Or(new Var("p"), new Var("q")) ;
+    Formula or  = new Or(new Var("p"), new Var("q")) ;
+    Formula neg = new Not(new Var("p")) ;
 
     @Test
     public void testBuildFromASTVar() {
@@ -61,6 +63,15 @@ public class BDDBuilderTest {
         boolean lowIsTrueLeaf = low.isLeaf() && low.getValue() ;
 
         Assert.assertTrue(lowIsTrueLeaf || highIsTrueLeaf) ;
+    }
+
+    @Test
+    public void testBuildFromASTNegate() {
+        BDDNode bdd = BDDFactory.ast_to_bdd(neg) ;
+        Assert.assertNotNull(bdd) ;
+
+        Assert.assertFalse(bdd.getHigh().getValue()) ;
+        Assert.assertTrue(bdd.getLow().getValue()) ;
     }
 
 }
