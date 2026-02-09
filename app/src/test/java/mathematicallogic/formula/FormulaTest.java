@@ -19,4 +19,11 @@ public class FormulaTest {
         Assert.assertEquals("!a", f.toString()) ;
     }
 
+    @Test
+    public void testAnd() {
+        Formula f = new And(new Var("a"), new Var("b")) ;
+
+        Assert.assertEquals("(a ∧ b)", f.toString()) ;
+    }
+
 }
