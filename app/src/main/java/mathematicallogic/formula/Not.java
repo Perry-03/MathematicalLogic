@@ -1,5 +1,9 @@
 package src.main.java.mathematicallogic.formula;
 
 public class Not implements Formula {
-    public Not(Formula f) { }
+    private final Formula f ;
+
+    public Not(Formula f) { this.f = f ; }
+
+    @Override public String toString() { return "!" + this.f.toString(); }
 }
