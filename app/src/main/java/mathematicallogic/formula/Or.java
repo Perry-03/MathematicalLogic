@@ -1,5 +1,10 @@
 package src.main.java.mathematicallogic.formula;
 
 public class Or implements Formula {
-    public Or(Formula f1, Formula f2) {}
+    private final Formula f1 ;
+    private final Formula f2 ;
+
+    public Or(Formula f1, Formula f2) { this.f1 = f1 ; this.f2 = f2 ; }
+
+    @Override public String toString() { return "(" + f1 + " ∨ " + f2 + ")" ; }
 }
