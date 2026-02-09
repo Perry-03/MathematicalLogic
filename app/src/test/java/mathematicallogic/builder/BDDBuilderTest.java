@@ -11,6 +11,7 @@ public class BDDBuilderTest {
     Formula or  = new Or(new Var("p"), new Var("q")) ;
     Formula neg = new Not(new Var("q")) ;
     Formula and  = new And(new Var("p"), neg) ;
+    Formula xor = new Xor(new Var("p"), new Var("q")) ;
 
     @Test
     public void testBuildFromASTVar() {
@@ -98,6 +99,26 @@ public class BDDBuilderTest {
         // p = 1 !q = 1 (q = 0, a sx)
         Assert.assertTrue(high.getLow().getValue()) ;
         // p = 1 !q = 0 (q = 1, a dx)
+        Assert.assertFalse(high.getHigh().getValue()) ;
+    }
+
+    @Test
+    public void testBuildFromASTXor() {
+        BDDNode bdd = BDDFactory.ast_to_bdd(xor) ;
+
+        Utils.print_BDD(bdd) ;
+
+        Assert.assertNotNull(bdd) ;
+
+        BDDNode low = bdd.getLow() ;
+        BDDNode high = bdd.getHigh() ;
+
+        Assert.assertNotNull(low) ;
+        // a dx p = 1
+        Assert.assertFalse(low.getLow().getValue()) ;
+        Assert.assertTrue(low.getHigh().getValue()) ;
+
+        Assert.assertTrue(high.getLow().getValue()) ;
         Assert.assertFalse(high.getHigh().getValue()) ;
     }
 

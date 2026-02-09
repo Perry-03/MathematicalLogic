@@ -32,6 +32,8 @@ public class BDDFactory {
             BDDNode low = BDDFactory.ast_to_bdd(left) ;
             BDDNode high = BDDFactory.ast_to_bdd(right) ;
             return apply_and(low, high) ;
+        } else if (f instanceof Xor) {
+            return new BDDNode(true) ;
         }
 
         return null ;
