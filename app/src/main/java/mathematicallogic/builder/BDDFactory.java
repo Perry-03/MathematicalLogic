@@ -2,52 +2,37 @@ package src.main.java.mathematicallogic.builder;
 
 import src.main.java.mathematicallogic.bdd.BDDNode;
 import src.main.java.mathematicallogic.formula.*;
-import src.main.java.mathematicallogic.util.Utils;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.function.BiFunction;
 
 public class BDDFactory {
 
-    private static Comparator<String> LEXICOGRAPHIC = Comparator.comparing(String::toString) ;
+    private static final Comparator<String> LEXICOGRAPHIC = Comparator.comparing(String::toString) ;
+    private static final HashMap<String, BiFunction<Boolean, Boolean, Boolean>> BOOL_OPERATIONS = new HashMap<>() ;
 
-    public static BDDNode ast_to_bdd(Formula f) {
-        if (f instanceof Var) {
-            return new BDDNode(((Var) f).getName(), new BDDNode(false), new BDDNode(true)) ;
-        } else if (f instanceof Or) {
-            Or or = (Or) f ;
-            Formula left = or.getLeft() ;
-            Formula right = or.getRight() ;
-            BDDNode low = BDDFactory.ast_to_bdd(left) ;
-            BDDNode high = BDDFactory.ast_to_bdd(right) ;
-            return apply_or(low, high) ;
-        } else if (f instanceof Not) {
-            Not not = (Not) f ;
-            BDDNode v = ast_to_bdd(not.getFormula()) ;
-            BDDNode res = apply_neg(v) ;
-            return res ;
-        } else if (f instanceof And) {
-            And and = (And) f ;
-            Formula left = and.getLeft() ;
-            Formula right = and.getRight() ;
-            BDDNode low = BDDFactory.ast_to_bdd(left) ;
-            BDDNode high = BDDFactory.ast_to_bdd(right) ;
-            return apply_and(low, high) ;
-        } else if (f instanceof Xor) {
-            Xor xor = (Xor) f ;
-            Formula left = xor.getLeft() ;
-            Formula right = xor.getRight() ;
-            BDDNode low = BDDFactory.ast_to_bdd(left) ;
-            BDDNode high = BDDFactory.ast_to_bdd(right) ;
-            return apply_xor(low, high) ;
-        }
-
-        return null ;
+    static {
+        BOOL_OPERATIONS.put("&&", (a,b) -> a && b) ;
+        BOOL_OPERATIONS.put("||", (a,b) -> a || b) ;
+        BOOL_OPERATIONS.put("^",  (a,b) -> a ^ b)  ;
     }
 
-    private static BDDNode apply_or(BDDNode u, BDDNode v) {
+    public static BDDNode ast_to_bdd(Formula f) {
+        return switch (f) {
+            case Var var -> new BDDNode(var.getName(), new BDDNode(false), new BDDNode(true)) ;
+            case Or or   -> apply(ast_to_bdd(or.getLeft()), ast_to_bdd(or.getRight()), BOOL_OPERATIONS.get("||")) ;
+            case And and -> apply(ast_to_bdd(and.getLeft()), ast_to_bdd(and.getRight()), BOOL_OPERATIONS.get("&&")) ;
+            case Xor xor -> apply(ast_to_bdd(xor.getLeft()), ast_to_bdd(xor.getRight()), BOOL_OPERATIONS.get("^")) ;
+            case Not not -> apply_neg(ast_to_bdd(not.getFormula())) ;
+            default -> throw new UnsupportedOperationException("Not supported yet.") ;
+        } ;
+    }
+
+    private static BDDNode apply(BDDNode u, BDDNode v, BiFunction<Boolean, Boolean, Boolean> func) {
         if (u.isLeaf() && v.isLeaf()) {
             return new BDDNode(
-                    u.getValue() || v.getValue()
+                    func.apply(u.getValue(), v.getValue())
             );
         }
         String x ;
@@ -61,13 +46,12 @@ public class BDDFactory {
         BDDNode v_low  = cofactor_low(v, x) ;
         BDDNode v_high = cofactor_high(v, x) ;
 
-        BDDNode low = apply_or(u_low, v_low) ;
-        BDDNode high = apply_or(u_high, v_high) ;
+        BDDNode low = apply(u_low, v_low, func) ;
+        BDDNode high = apply(u_high, v_high, func) ;
 
         if (low.equals(high)) return low ;
 
         return new BDDNode(x, low, high) ;
-
     }
 
     private static BDDNode apply_neg(BDDNode u) {
@@ -76,57 +60,6 @@ public class BDDFactory {
         BDDNode high = apply_neg(u.getHigh()) ;
 
         return new BDDNode(u.getVar(), low, high) ;
-    }
-
-    private static BDDNode apply_and(BDDNode u, BDDNode v) {
-        if (u.isLeaf() && v.isLeaf()) {
-            return new BDDNode(
-                    u.getValue() && v.getValue()
-            );
-        }
-        String x ;
-        if (u.isLeaf()) x = v.getVar() ;
-        else if (v.isLeaf()) x = u.getVar() ;
-        else x = min_var(u.getVar(), v.getVar()) ;
-
-        BDDNode u_low = cofactor_low(u, x) ;
-        BDDNode u_high = cofactor_high(u, x) ;
-
-        BDDNode v_low  = cofactor_low(v, x) ;
-        BDDNode v_high = cofactor_high(v, x) ;
-
-        BDDNode low = apply_and(u_low, v_low) ;
-        BDDNode high = apply_and(u_high, v_high) ;
-
-        if (low.equals(high)) return low ;
-
-        return new BDDNode(x, low, high) ;
-    }
-
-    private static BDDNode apply_xor(BDDNode u, BDDNode v) {
-        if (u.isLeaf() && v.isLeaf()) {
-            return new BDDNode(
-                    u.getValue() ^ v.getValue()
-            );
-        }
-        String x ;
-        if (u.isLeaf()) x = v.getVar() ;
-        else if (v.isLeaf()) x = u.getVar() ;
-        else x = min_var(u.getVar(), v.getVar()) ;
-
-        BDDNode u_low = cofactor_low(u, x) ;
-        BDDNode u_high = cofactor_high(u, x) ;
-
-        BDDNode v_low  = cofactor_low(v, x) ;
-        BDDNode v_high = cofactor_high(v, x) ;
-
-        BDDNode low = apply_xor(u_low, v_low) ;
-        BDDNode high = apply_xor(u_high, v_high) ;
-
-        if (low.equals(high)) return low ;
-
-        return new BDDNode(x, low, high) ;
-
     }
 
     private static BDDNode cofactor_low(BDDNode node, String x) {
