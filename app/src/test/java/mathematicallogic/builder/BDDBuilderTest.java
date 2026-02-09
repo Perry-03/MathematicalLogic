@@ -9,6 +9,7 @@ import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
 
 public class BDDBuilderTest {
+    Formula or = new Or(new Var("p"), new Var("q")) ;
 
     @Test
     public void testBuildFromASTVar() {
@@ -24,9 +25,8 @@ public class BDDBuilderTest {
 
     @Test
     public void testBuildFromASTOr() {
-        Formula f = new Or(new Var("p"), new Var("q")) ;
 
-        BDDNode bdd = BDDFactory.ast_to_bdd(f) ;
+        BDDNode bdd = BDDFactory.ast_to_bdd(or) ;
 
         Assert.assertNotNull(bdd) ;
 
@@ -43,9 +43,7 @@ public class BDDBuilderTest {
 
     @Test
     public void testBuildFromASTOrReduced() {
-        Formula f = new Or(new Var("p"), new Var("q")) ;
-
-        BDDNode bdd = BDDFactory.ast_to_bdd(f) ;
+        BDDNode bdd = BDDFactory.ast_to_bdd(or) ;
 
         Assert.assertNotNull(bdd) ;
 
