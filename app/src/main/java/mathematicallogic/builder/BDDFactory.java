@@ -33,7 +33,12 @@ public class BDDFactory {
             BDDNode high = BDDFactory.ast_to_bdd(right) ;
             return apply_and(low, high) ;
         } else if (f instanceof Xor) {
-            return new BDDNode(true) ;
+            Xor xor = (Xor) f ;
+            Formula left = xor.getLeft() ;
+            Formula right = xor.getRight() ;
+            BDDNode low = BDDFactory.ast_to_bdd(left) ;
+            BDDNode high = BDDFactory.ast_to_bdd(right) ;
+            return apply_xor(low, high) ;
         }
 
         return null ;
@@ -96,6 +101,32 @@ public class BDDFactory {
         if (low.equals(high)) return low ;
 
         return new BDDNode(x, low, high) ;
+    }
+
+    private static BDDNode apply_xor(BDDNode u, BDDNode v) {
+        if (u.isLeaf() && v.isLeaf()) {
+            return new BDDNode(
+                    u.getValue() ^ v.getValue()
+            );
+        }
+        String x ;
+        if (u.isLeaf()) x = v.getVar() ;
+        else if (v.isLeaf()) x = u.getVar() ;
+        else x = min_var(u.getVar(), v.getVar()) ;
+
+        BDDNode u_low = cofactor_low(u, x) ;
+        BDDNode u_high = cofactor_high(u, x) ;
+
+        BDDNode v_low  = cofactor_low(v, x) ;
+        BDDNode v_high = cofactor_high(v, x) ;
+
+        BDDNode low = apply_xor(u_low, v_low) ;
+        BDDNode high = apply_xor(u_high, v_high) ;
+
+        if (low.equals(high)) return low ;
+
+        return new BDDNode(x, low, high) ;
+
     }
 
     private static BDDNode cofactor_low(BDDNode node, String x) {
