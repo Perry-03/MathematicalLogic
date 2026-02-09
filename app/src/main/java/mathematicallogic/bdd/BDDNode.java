@@ -5,7 +5,7 @@ public class BDDNode {
 
     public BDDNode(boolean value) { this.value = value ; }
 
-    public boolean getValue() { return false ; }
+    public boolean getValue() { return value ; }
 
 
 }
