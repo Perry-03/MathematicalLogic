@@ -8,8 +8,7 @@ public class BDDFactory {
 
     public static BDDNode ast_to_bdd(Formula f) {
         if (f instanceof Var) {
-            // return new BDDNode(((Var) f).getName(), new BDDNode(false), new BDDNode(true)) ;
-            return null ;
+            return new BDDNode(((Var) f).getName(), new BDDNode(false), new BDDNode(true)) ;
         }
         return null ;
     }
