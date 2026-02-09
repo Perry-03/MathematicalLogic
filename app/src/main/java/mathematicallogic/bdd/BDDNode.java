@@ -22,8 +22,17 @@ public class BDDNode {
 
     @Override public boolean equals(Object o) {
         if (this == o) return true ;
-        if (o instanceof BDDNode other)
-            if (other.isLeaf() && isLeaf()) return other.getValue() == this.getValue() ;
-        return false ;
+        if (!(o instanceof BDDNode other)) return false ;
+
+        if (other.isLeaf() && isLeaf()) return other.getValue() == this.getValue() ;
+        if (this.isLeaf() != other.isLeaf()) return false ;
+        if (!this.getVar().equals(other.getVar())) return false ;
+
+        boolean lowEq  = getLow() == null && other.getLow() == null ||
+                         getLow() != null && getLow().equals(other.getLow()) ;
+        boolean highEq = getHigh() == null && other.getHigh() == null ||
+                         getHigh() != null && getHigh().equals(other.getHigh()) ;
+
+        return lowEq && highEq ;
     }
 }
