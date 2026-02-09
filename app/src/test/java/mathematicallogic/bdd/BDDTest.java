@@ -16,4 +16,13 @@ public class BDDTest {
         Assert.assertFalse(b.getValue());
     }
 
+    @Test
+    public void testBuildSimpleNodeBDD() {
+        BDDNode a = new BDDNode("a", new BDDNode(true), new BDDNode(false)) ;
+
+        Assert.assertTrue(a.getLow().getValue()) ;
+        Assert.assertFalse(a.getHigh().getValue()) ;
+        Assert.assertEquals("a", a.getVar()); ;
+    }
+
 }
