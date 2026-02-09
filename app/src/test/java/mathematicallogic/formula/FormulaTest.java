@@ -26,4 +26,11 @@ public class FormulaTest {
         Assert.assertEquals("(a ∧ b)", f.toString()) ;
     }
 
+    @Test
+    public void testOr() {
+        Formula f = new Or(new Var("a"), new Var("b")) ;
+
+        Assert.assertEquals("(a ∨ b)", f.toString()) ;
+    }
+
 }
