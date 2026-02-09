@@ -8,6 +8,7 @@ import src.main.java.mathematicallogic.formula.Formula;
 import src.main.java.mathematicallogic.formula.Not;
 import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
+import src.main.java.mathematicallogic.util.Utils;
 
 public class BDDBuilderTest {
     Formula or  = new Or(new Var("p"), new Var("q")) ;
@@ -72,6 +73,14 @@ public class BDDBuilderTest {
 
         Assert.assertFalse(bdd.getHigh().getValue()) ;
         Assert.assertTrue(bdd.getLow().getValue()) ;
+    }
+
+    @Test
+    public void testBuildCombinedAST() {
+        Formula combined = new Not(or) ;
+        BDDNode bdd = BDDFactory.ast_to_bdd(combined) ;
+        Utils.print_BDD(bdd) ;
+        Assert.assertNotNull(bdd) ;
     }
 
 }

@@ -27,7 +27,6 @@ public class BDDFactory {
             Not not = (Not) f ;
             BDDNode v = ast_to_bdd(not.getFormula()) ;
             BDDNode res = apply_neg(v) ;
-            //Utils.print_BDD(res) ;
             return res ;
         }
 
