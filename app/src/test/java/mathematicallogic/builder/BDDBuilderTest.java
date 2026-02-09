@@ -84,6 +84,9 @@ public class BDDBuilderTest {
     @Test
     public void testBuildFromASTAnd() {
         BDDNode bdd = BDDFactory.ast_to_bdd(and) ;
+
+        Utils.print_BDD(bdd) ;
+
         Assert.assertNotNull(bdd) ;
 
         BDDNode low = bdd.getLow() ;

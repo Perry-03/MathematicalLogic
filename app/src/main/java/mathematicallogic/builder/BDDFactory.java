@@ -31,9 +31,7 @@ public class BDDFactory {
             Formula right = and.getRight() ;
             BDDNode low = BDDFactory.ast_to_bdd(left) ;
             BDDNode high = BDDFactory.ast_to_bdd(right) ;
-            BDDNode res = apply_and(low, high) ;
-            Utils.print_BDD(res) ;
-            return res ;
+            return apply_and(low, high) ;
         }
 
         return null ;
