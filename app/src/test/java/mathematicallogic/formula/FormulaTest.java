@@ -7,9 +7,16 @@ import src.main.java.mathematicallogic.formula.*;
 public class FormulaTest {
     @Test
     public void testVar() {
-        Formula v = new Var("a");
+        Formula f = new Var("a") ;
 
-        Assert.assertEquals("a", v.toString());
+        Assert.assertEquals("a", f.toString()) ;
+    }
+
+    @Test
+    public void testNot() {
+        Formula f = new Not(new Var("a")) ;
+
+        Assert.assertEquals("!a", f.toString()) ;
     }
 
 }
