@@ -12,8 +12,8 @@ public class BDDTest {
         BDDNode a = new BDDNode(true) ;
         BDDNode b = new BDDNode(false) ;
 
-        Assert.assertEquals(true, a.getValue()) ;
-        Assert.assertEquals(false, b.getValue());
+        Assert.assertTrue(a.getValue());
+        Assert.assertFalse(b.getValue());
     }
 
 }
