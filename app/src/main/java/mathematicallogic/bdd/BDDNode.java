@@ -19,4 +19,11 @@ public class BDDNode {
     public BDDNode getHigh() { return high ; }
 
     public boolean isLeaf() { return low == null && high == null ; }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true ;
+        if (o instanceof BDDNode other)
+            if (other.isLeaf() && isLeaf()) return other.getValue() == this.getValue() ;
+        return false ;
+    }
 }

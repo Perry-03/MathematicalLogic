@@ -9,6 +9,7 @@ import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
 
 public class BDDBuilderTest {
+    Formula or = new Or(new Var("p"), new Var("q")) ;
 
     @Test
     public void testBuildFromASTVar() {
@@ -24,24 +25,42 @@ public class BDDBuilderTest {
 
     @Test
     public void testBuildFromASTOr() {
-        Formula f = new Or(new Var("p"), new Var("q"));
 
-        BDDNode bdd = BDDFactory.ast_to_bdd(f);
+        BDDNode bdd = BDDFactory.ast_to_bdd(or) ;
 
-        Assert.assertNotNull(bdd);
+        Assert.assertNotNull(bdd) ;
 
-        boolean rootIsP = "p".equals(bdd.getVar());
+        boolean rootIsP = "p".equals(bdd.getVar()) ;
 
-        Assert.assertTrue(rootIsP);
+        Assert.assertTrue(rootIsP) ;
 
-        BDDNode low = bdd.getLow();
-        BDDNode high = bdd.getHigh();
+        BDDNode low = bdd.getLow() ;
+        BDDNode high = bdd.getHigh() ;
 
-        Assert.assertNotNull(low);
-        Assert.assertNotNull(high);
+        Assert.assertNotNull(low) ;
+        Assert.assertNotNull(high) ;
+    }
 
-        boolean highIsTrueLeaf = high.isLeaf() && high.getValue();
-        boolean lowIsTrueLeaf = low.isLeaf() && low.getValue();
+    @Test
+    public void testBuildFromASTOrReduced() {
+        BDDNode bdd = BDDFactory.ast_to_bdd(or) ;
+
+        Assert.assertNotNull(bdd) ;
+
+        boolean rootIsP = "p".equals(bdd.getVar()) ;
+
+        Assert.assertTrue(rootIsP) ;
+
+        BDDNode low = bdd.getLow() ;
+        BDDNode high = bdd.getHigh() ;
+
+        Assert.assertNotNull(low) ;
+        Assert.assertNotNull(high) ;
+
+        boolean highIsTrueLeaf = high.isLeaf() && high.getValue() ;
+        boolean lowIsTrueLeaf = low.isLeaf() && low.getValue() ;
+
+        Assert.assertTrue(lowIsTrueLeaf || highIsTrueLeaf) ;
     }
 
 }
