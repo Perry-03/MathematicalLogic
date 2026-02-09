@@ -30,7 +30,7 @@ public class BDDFactory {
             return res ;
         }
 
-        return null ;
+        return new BDDNode(false) ;
     }
 
     private static BDDNode apply_or(BDDNode u, BDDNode v) {

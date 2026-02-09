@@ -4,15 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import src.main.java.mathematicallogic.bdd.BDDNode;
 import src.main.java.mathematicallogic.builder.BDDFactory;
-import src.main.java.mathematicallogic.formula.Formula;
-import src.main.java.mathematicallogic.formula.Not;
-import src.main.java.mathematicallogic.formula.Or;
-import src.main.java.mathematicallogic.formula.Var;
+import src.main.java.mathematicallogic.formula.*;
 import src.main.java.mathematicallogic.util.Utils;
 
 public class BDDBuilderTest {
     Formula or  = new Or(new Var("p"), new Var("q")) ;
-    Formula neg = new Not(new Var("p")) ;
+    Formula neg = new Not(new Var("q")) ;
+    Formula and  = new And(new Var("p"), neg) ;
 
     @Test
     public void testBuildFromASTVar() {
@@ -81,6 +79,23 @@ public class BDDBuilderTest {
         BDDNode bdd = BDDFactory.ast_to_bdd(combined) ;
         Utils.print_BDD(bdd) ;
         Assert.assertNotNull(bdd) ;
+    }
+
+    @Test
+    public void testBuildFromASTAnd() {
+        BDDNode bdd = BDDFactory.ast_to_bdd(and) ;
+        Assert.assertNotNull(bdd) ;
+
+        BDDNode low = bdd.getLow() ;
+        BDDNode high = bdd.getHigh() ;
+
+        Assert.assertNotNull(low) ;
+        // a sx p = 0
+        Assert.assertFalse(low.getValue()) ;
+        // p = 1 !q = 1 (q = 0, a sx)
+        Assert.assertTrue(high.getLow().getValue()) ;
+        // p = 1 !q = 0 (q = 1, a dx)
+        Assert.assertFalse(high.getHigh().getValue()) ;
     }
 
 }
