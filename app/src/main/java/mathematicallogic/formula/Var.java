@@ -1,6 +1,9 @@
 package src.main.java.mathematicallogic.formula;
 
 public class Var implements Formula {
-    public Var(String a) {
-    }
+    private final String name ;
+
+    public Var(final String a) { this.name = a ; }
+
+    @Override public String toString() { return this.name; }
 }
