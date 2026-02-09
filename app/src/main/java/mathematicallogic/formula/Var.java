@@ -5,5 +5,7 @@ public class Var implements Formula {
 
     public Var(final String a) { this.name = a ; }
 
-    @Override public String toString() { return this.name; }
+    @Override public String toString() { return this.name ; }
+
+    public String getName() { return this.name ; }
 }
