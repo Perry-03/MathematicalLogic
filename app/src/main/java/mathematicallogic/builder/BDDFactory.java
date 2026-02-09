@@ -2,8 +2,10 @@ package src.main.java.mathematicallogic.builder;
 
 import src.main.java.mathematicallogic.bdd.BDDNode;
 import src.main.java.mathematicallogic.formula.Formula;
+import src.main.java.mathematicallogic.formula.Not;
 import src.main.java.mathematicallogic.formula.Or;
 import src.main.java.mathematicallogic.formula.Var;
+import src.main.java.mathematicallogic.util.Utils;
 
 import java.util.Comparator;
 
@@ -21,6 +23,11 @@ public class BDDFactory {
             BDDNode low = BDDFactory.ast_to_bdd(left) ;
             BDDNode high = BDDFactory.ast_to_bdd(right) ;
             return apply_or(low, high) ;
+        } else if (f instanceof Not) {
+            Not not = (Not) f ;
+            BDDNode v = ast_to_bdd(not.getFormula()) ;
+            BDDNode res = apply_neg(v) ;
+            return res ;
         }
 
         return null ;
@@ -52,6 +59,14 @@ public class BDDFactory {
 
     }
 
+    private static BDDNode apply_neg(BDDNode u) {
+        if (u.isLeaf()) return new BDDNode(!u.getValue()) ;
+        BDDNode low = apply_neg(u.getLow()) ;
+        BDDNode high = apply_neg(u.getHigh()) ;
+
+        return new BDDNode(u.getVar(), low, high) ;
+    }
+
     private static BDDNode cofactor_low(BDDNode node, String x) {
         if (node.isLeaf()) return node ;
         if (node.getVar().equals(x)) return node.getLow() ;
@@ -65,5 +80,6 @@ public class BDDFactory {
     }
 
     private static String min_var(String v1, String v2) { return LEXICOGRAPHIC.compare(v1, v2) <= 0 ? v1 : v2 ; }
+
 
 }
