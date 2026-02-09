@@ -17,4 +17,6 @@ public class BDDNode {
     public String getVar() { return vName ; }
     public BDDNode getLow() { return low ; }
     public BDDNode getHigh() { return high ; }
+
+    public boolean isLeaf() { return false ; }
 }
