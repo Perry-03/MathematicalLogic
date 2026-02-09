@@ -18,5 +18,5 @@ public class BDDNode {
     public BDDNode getLow() { return low ; }
     public BDDNode getHigh() { return high ; }
 
-    public boolean isLeaf() { return false ; }
+    public boolean isLeaf() { return low == null && high == null ; }
 }
