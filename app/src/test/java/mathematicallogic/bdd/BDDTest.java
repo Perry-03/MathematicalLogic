@@ -1,9 +1,7 @@
-package src.test.java.mathematicallogic.bdd;
+package mathematicallogic.bdd;
 
 import org.junit.Assert;
 import org.junit.Test;
-import src.main.java.mathematicallogic.bdd.BDDNode;
-import src.main.java.mathematicallogic.formula.Var;
 
 public class BDDTest {
 

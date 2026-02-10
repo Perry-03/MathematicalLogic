@@ -1,8 +1,8 @@
-package src.test.java.mathematicallogic.formula;
+package mathematicallogic.formula;
 
+import mathematicallogic.formula.*;
 import org.junit.Assert;
 import org.junit.Test;
-import src.main.java.mathematicallogic.formula.*;
 
 public class FormulaTest {
     @Test

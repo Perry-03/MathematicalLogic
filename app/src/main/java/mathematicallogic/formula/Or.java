@@ -1,4 +1,4 @@
-package src.main.java.mathematicallogic.formula;
+package mathematicallogic.formula;
 
 public class Or implements Formula {
     private final Formula left ;

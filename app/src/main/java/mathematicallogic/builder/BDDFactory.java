@@ -1,7 +1,8 @@
-package src.main.java.mathematicallogic.builder;
+package mathematicallogic.builder;
 
-import src.main.java.mathematicallogic.bdd.BDDNode;
-import src.main.java.mathematicallogic.formula.*;
+
+import mathematicallogic.bdd.BDDNode;
+import mathematicallogic.formula.*;
 
 import java.util.Comparator;
 import java.util.HashMap;

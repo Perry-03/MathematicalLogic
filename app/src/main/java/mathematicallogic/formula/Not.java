@@ -1,4 +1,4 @@
-package src.main.java.mathematicallogic.formula;
+package mathematicallogic.formula;
 
 public class Not implements Formula {
     private final Formula f ;

@@ -1,4 +1,4 @@
-package src.main.java.mathematicallogic.bdd;
+package mathematicallogic.bdd;
 
 public class BDDNode {
     private String vName ;

@@ -1,11 +1,11 @@
-package src.test.java.mathematicallogic.builder;
+package mathematicallogic.builder;
 
+import mathematicallogic.bdd.BDDNode;
+import mathematicallogic.formula.*;
+import mathematicallogic.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
-import src.main.java.mathematicallogic.bdd.BDDNode;
-import src.main.java.mathematicallogic.builder.BDDFactory;
-import src.main.java.mathematicallogic.formula.*;
-import src.main.java.mathematicallogic.util.Utils;
+
 
 public class BDDBuilderTest {
     Formula or  = new Or(new Var("p"), new Var("q")) ;
