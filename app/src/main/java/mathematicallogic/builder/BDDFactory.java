@@ -12,6 +12,8 @@ public class BDDFactory {
 
     private static final Comparator<String> LEXICOGRAPHIC = Comparator.comparing(String::toString) ;
     private static final HashMap<String, BiFunction<Boolean, Boolean, Boolean>> BOOL_OPERATIONS = new HashMap<>() ;
+    private static final BDDNode FALSE_LEAF = new BDDNode(false) ;
+    private static final BDDNode TRUE_LEAF = new BDDNode(true) ;
 
     static {
         BOOL_OPERATIONS.put("&&", (a,b) -> a && b) ;
@@ -31,11 +33,11 @@ public class BDDFactory {
     }
 
     private static BDDNode apply(BDDNode u, BDDNode v, BiFunction<Boolean, Boolean, Boolean> func) {
-        if (u.isLeaf() && v.isLeaf()) {
-            return new BDDNode(
-                    func.apply(u.getValue(), v.getValue())
-            );
-        }
+        if (u.isLeaf() && v.isLeaf())
+            return func.apply(u.getValue(), v.getValue()) ?
+                    TRUE_LEAF :
+                    FALSE_LEAF ;
+
         String x ;
         if (u.isLeaf()) x = v.getVar() ;
         else if (v.isLeaf()) x = u.getVar() ;
@@ -56,7 +58,9 @@ public class BDDFactory {
     }
 
     private static BDDNode apply_neg(BDDNode u) {
-        if (u.isLeaf()) return new BDDNode(!u.getValue()) ;
+        if (u.isLeaf())
+            return u.getValue() ? FALSE_LEAF : TRUE_LEAF ;
+
         BDDNode low = apply_neg(u.getLow()) ;
         BDDNode high = apply_neg(u.getHigh()) ;
 
