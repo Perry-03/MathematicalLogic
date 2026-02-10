@@ -32,6 +32,10 @@ public class BDDFactory {
         } ;
     }
 
+    public static BDDNode apply(BDDNode u, BDDNode v, String op) {
+        return apply(u, v, BOOL_OPERATIONS.get(op)) ;
+    }
+
     private static BDDNode apply(BDDNode u, BDDNode v, BiFunction<Boolean, Boolean, Boolean> func) {
         if (u.isLeaf() && v.isLeaf())
             return func.apply(u.getValue(), v.getValue()) ?
