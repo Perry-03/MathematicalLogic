@@ -98,4 +98,6 @@ public class BDDFactory {
 
     private static String min_var(String v1, String v2) { return LEXICOGRAPHIC.compare(v1, v2) <= 0 ? v1 : v2 ; }
 
+    public static void clear_cache() { UNIQUE_TABLE.clear() ; }
+
 }
