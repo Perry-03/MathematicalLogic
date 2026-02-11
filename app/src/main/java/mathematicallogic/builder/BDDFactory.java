@@ -14,6 +14,7 @@ public class BDDFactory {
     private static final HashMap<String, BiFunction<Boolean, Boolean, Boolean>> BOOL_OPERATIONS = new HashMap<>() ;
     private static final BDDNode FALSE_LEAF = new BDDNode(false) ;
     private static final BDDNode TRUE_LEAF = new BDDNode(true) ;
+    private static final HashMap<Triple, BDDNode> UNIQUE_TABLE = new HashMap<>() ;
 
     static {
         BOOL_OPERATIONS.put("&&", (a,b) -> a && b) ;
@@ -58,10 +59,10 @@ public class BDDFactory {
 
         if (low.equals(high)) return low ;
 
-        return new BDDNode(x, low, high) ;
+        return check_unique_table(x, low, high) ;
     }
 
-    private static BDDNode apply_neg(BDDNode u) {
+    public static BDDNode apply_neg(BDDNode u) {
         if (u.isLeaf())
             return u.getValue() ? FALSE_LEAF : TRUE_LEAF ;
 
@@ -69,6 +70,18 @@ public class BDDFactory {
         BDDNode high = apply_neg(u.getHigh()) ;
 
         return new BDDNode(u.getVar(), low, high) ;
+    }
+
+    private static BDDNode check_unique_table(String v, BDDNode low, BDDNode high) {
+        if (low == high) return low ;
+
+        Triple t = new Triple(v, low, high) ;
+
+        if (UNIQUE_TABLE.containsKey(t)) return UNIQUE_TABLE.get(t) ;
+
+        BDDNode node = new BDDNode(v, low, high) ;
+        UNIQUE_TABLE.put(t, node) ;
+        return node ;
     }
 
     private static BDDNode cofactor_low(BDDNode node, String x) {
