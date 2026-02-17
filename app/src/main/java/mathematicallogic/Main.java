@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Main {
 
@@ -26,7 +27,7 @@ public class Main {
         if (formulas.exists())
             is = new FileInputStream(formulas) ;
         else
-            is = Main.class.getResourceAsStream("formulas.txt") ;
+            is = Main.class.getResourceAsStream("/formulas.txt") ;
 
         List<String> lines = new BufferedReader(new InputStreamReader(is))
                 .lines()
@@ -47,8 +48,13 @@ public class Main {
         // formule generate random + test scalabilità pesante
         Benchmark.auto_generate() ;
 
-        // export to .dot
+        // pulisco la cartella
         String graphs_path = "generated/graphs" ;
+        File graphs_dir =  new File(graphs_path) ;
+        if (graphs_dir.exists())
+            for (File f : Objects.requireNonNull(graphs_dir.listFiles()))
+                f.delete() ;
+        // export to .dot
         Benchmark.export(graphs_path) ;
 
     }
