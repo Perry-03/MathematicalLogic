@@ -35,4 +35,6 @@ public class BDDNode {
 
         return lowEq && highEq ;
     }
+
+    @Override public int hashCode() { return isLeaf() ? Boolean.hashCode(value) : System.identityHashCode(this) ; }
 }

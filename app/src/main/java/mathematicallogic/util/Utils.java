@@ -38,9 +38,15 @@ public class Utils {
         print_BDD(node.getHigh(), indent + "     ", false);
     }
 
-    public static void export_to_dot(BDDNode bdd, String filename) {
+    public static void export_to_dot(BDDNode bdd, String filename, String gLabel) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            String safeLabel = gLabel
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"") ;
+
             writer.println("digraph BDD {");
+            writer.println("  label =\"" + gLabel + "\";") ;
+            writer.println("  labelloc =\"t\";") ;
             writer.println("  rankdir=TB;");
             writer.println("  node [shape=circle];");
 

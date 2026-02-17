@@ -6,7 +6,7 @@ public class Xor implements  Formula {
 
     public Xor(final Formula left, final Formula right) { this.left = left ; this.right = right ; }
 
-    @Override public String toString() { return "(" + left + " ⊕ " + right + ")" ; }
+    @Override public String toString() { return "(" + left + " ^ " + right + ")" ; }
 
     public Formula getLeft() { return left ; }
     public Formula getRight() { return right ; }

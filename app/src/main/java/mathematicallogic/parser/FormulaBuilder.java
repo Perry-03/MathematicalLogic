@@ -26,8 +26,21 @@ public class FormulaBuilder extends LogicBaseVisitor<Formula> {
     }
 
     @Override
+    public Formula visitImplExpr(LogicParser.ImplExprContext ctx) {
+        Formula left = visit(ctx.formula(0)) ;
+        Formula right = visit(ctx.formula(1)) ;
+        return new Or(new Not(left), right) ;
+    }
+
+    @Override
+    public Formula visitUnaryExpr(LogicParser.UnaryExprContext ctx) { return visit(ctx.unary()) ; }
+
+    @Override
+    public Formula visitAtomExpr(LogicParser.AtomExprContext ctx) { return visit(ctx.atom()) ; }
+
+    @Override
     public Formula visitNotExpr(LogicParser.NotExprContext ctx) {
-        Formula inner = visit(ctx.formula());
+        Formula inner = visit(ctx.unary());
         return new Not(inner);
     }
 

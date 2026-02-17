@@ -24,7 +24,7 @@ public class BDDFactory {
 
     public static BDDNode ast_to_bdd(Formula f) {
         return switch (f) {
-            case Var var -> new BDDNode(var.getName(), new BDDNode(false), new BDDNode(true)) ;
+            case Var var -> check_unique_table(var.getName(), FALSE_LEAF, TRUE_LEAF) ;
             case Or or   -> apply(ast_to_bdd(or.getLeft()), ast_to_bdd(or.getRight()), BOOL_OPERATIONS.get("||")) ;
             case And and -> apply(ast_to_bdd(and.getLeft()), ast_to_bdd(and.getRight()), BOOL_OPERATIONS.get("&&")) ;
             case Xor xor -> apply(ast_to_bdd(xor.getLeft()), ast_to_bdd(xor.getRight()), BOOL_OPERATIONS.get("^")) ;
@@ -57,7 +57,7 @@ public class BDDFactory {
         BDDNode low = apply(u_low, v_low, func) ;
         BDDNode high = apply(u_high, v_high, func) ;
 
-        if (low.equals(high)) return low ;
+        if (low == high) return low ;
 
         return check_unique_table(x, low, high) ;
     }
@@ -69,7 +69,9 @@ public class BDDFactory {
         BDDNode low = apply_neg(u.getLow()) ;
         BDDNode high = apply_neg(u.getHigh()) ;
 
-        return new BDDNode(u.getVar(), low, high) ;
+        if (low == high) return low ;
+
+        return check_unique_table(u.getVar(), low, high) ;
     }
 
     private static BDDNode check_unique_table(String v, BDDNode low, BDDNode high) {

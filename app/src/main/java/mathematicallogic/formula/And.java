@@ -6,7 +6,7 @@ public class And implements Formula {
 
     public And(final Formula a, final Formula b) { this.left = a ; this.right = b ; }
 
-    @Override public String toString() { return "(" + left + " ∧ " + right + ")" ; }
+    @Override public String toString() { return "(" + left + " && " + right + ")" ; }
     
     public  Formula getLeft() { return left; }
     public Formula getRight() { return right; }

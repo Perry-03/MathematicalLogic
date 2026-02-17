@@ -5,7 +5,7 @@ public class Not implements Formula {
 
     public Not(final Formula f) { this.f = f ; }
 
-    @Override public String toString() { return "!" + this.f.toString() ; }
+    @Override public String toString() { return "!" + f ; }
 
     public Formula getFormula() { return f ; }
 }
