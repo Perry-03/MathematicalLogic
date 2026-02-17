@@ -3,10 +3,15 @@ import mathematicallogic.bdd.BDDNode;
 import mathematicallogic.builder.BDDFactory;
 import mathematicallogic.formula.Formula;
 import mathematicallogic.formula.Var;
+import mathematicallogic.parser.FormulaParser;
 import mathematicallogic.util.Utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -19,29 +24,39 @@ public class Main {
             BDDFactory.clear_cache() ;
         }
 
-        System.out.println("\n=== BENCHMARK ===\n") ;
-        benchmark("p OR q", Main::or1) ;
-        benchmark("(p OR q) OR r", Main::or2) ;
-        benchmark("p AND q", Main::and1) ;
+        InputStream is = Main.class.getResourceAsStream("/formulas.txt") ;
+        List<String> lines = new BufferedReader(new InputStreamReader(is))
+                .lines()
+                .toList() ;
+
+        for (int i = 0; i < lines.size(); i++) {
+            Formula formula = FormulaParser.parse(lines.get(i)) ;
+            benchmark("input" + i, formula) ;
+        }
+
+        // default benchmarks
+//        System.out.println("\n=== BENCHMARK ===\n") ;
+//        benchmark("p OR q", Main::or1) ;
+//        benchmark("(p OR q) OR r", Main::or2) ;
+//        benchmark("p AND q", Main::and1) ;
         benchmark("de morgan", Main::de_morgan) ;
-        benchmark("p XOR q", Main::xor1) ;
-        benchmark("(p XOR q) XOR r", Main::xor2) ;
-        benchmark("deep nesting", Main::deep_nesting) ;
-
-        System.out.println("\n===SCALABILITY TEST ===\n") ;
-
-        // ogni XOR raddoppia circa il numero di nodi
-        benchmark("10 XOR vars", () -> xor_chain(10)) ;
-        benchmark("20 XOR vars", () -> xor_chain(20)) ;
+//        benchmark("p XOR q", Main::xor1) ;
+//        benchmark("(p XOR q) XOR r", Main::xor2) ;
+//        benchmark("deep nesting", Main::deep_nesting) ;
+//
+//        // SCALABILITY TEST con XOR
+//        System.out.println("\n===SCALABILITY TEST ===\n") ;
+//        // ogni XOR raddoppia circa il numero di nodi
+//        benchmark("10 XOR vars", () -> xor_chain(10)) ;
+//        benchmark("20 XOR vars", () -> xor_chain(20)) ;
 
         // export to .dot
         String graphs_path = "generated/graphs" ;
-        new File(graphs_path).mkdirs() ;
-        for (Map.Entry<String, BDDNode> entry : bdds.entrySet()) {
+        var check = new File(graphs_path).mkdirs() ;
+        for (Map.Entry<String, BDDNode> entry : bdds.entrySet())
             Utils.export_to_dot(
                     entry.getValue(),
                     graphs_path + "/" + entry.getKey() + ".dot") ;
-        }
     }
 
     private static void warmup() {
@@ -50,6 +65,16 @@ public class Main {
         BDDNode aBDD = BDDFactory.ast_to_bdd(a) ;
         BDDNode bBDD = BDDFactory.ast_to_bdd(b) ;
         BDDFactory.apply(aBDD, bBDD, "||") ;
+    }
+
+    private static void benchmark(String name, Formula f) {
+        BDDFactory.clear_cache() ;
+        long start = System.nanoTime() ;
+        BDDNode bdd = BDDFactory.ast_to_bdd(f) ;
+        long end = System.nanoTime() ;
+        double ms = (end - start) / 1_000_000.0 ;
+        System.out.printf("### %-30s LASTED: %.3f ms\n", name + ":", ms) ;
+        bdds.put(name, bdd) ;
     }
 
     private static void benchmark(String name, Runnable test) {

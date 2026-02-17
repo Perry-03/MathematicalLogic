@@ -71,8 +71,6 @@ public class Utils {
             writer.println("}");
 
             System.out.println("BDD esportato in: " + filename);
-            System.out.println("Visualizza con: dot -Tpng " + filename + " -o " + filename.replace("graphs", "img") + ".png");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
