@@ -26,6 +26,17 @@ This is the BDD for the Boolean function <code>a && b</code>. As in the previous
 - Assigning 1 to <code>a</code> the function will be evaluated *True* only if we follow the 1-edge for <code>b</code>.
 - On the other hand, if we assign 0 to <code>a</code> the function always evaluates to *False*, regardless of the value of <code>b</code>.
 
+## Why BDDs?
+Boolean functions can be represented in many ways such as truth tables, but each has its limitations.
+
+A truth table is the most popular representation: it explicity lists the output for every possible combination of inputs.
+However, for a function with n variables, the truth table has 2<sup>n</sup> rows. Verifying whether two functions are equivalent,
+for instance, would require comparing all 2<sup>n</sup> rows.
+
+BDDs overcome this problem: two logically equivalent formulas will always produce the same reduced BDD (given the same variable ordering).
+
+On the other hand, as we will discuss soon, choosing a good variable ordering is not that easy: in the worst case, a poor ordering can cause the BDD to grow exponentially in size, making it impractical.
+
 ## Reduced Binary Decision Diagrams
 In the BDD representing the Boolean function [A or B](#a-or-b), we can observe that the diagram can be reduced. As discussed earlier, regardless of the value of <code>b</code>,
 if we assign 1 to <code>a</code> the function evaluates to *True* due to the OR property.
@@ -41,7 +52,7 @@ when both variables are assigned *True*, the resulting **reduced** BDD is shown 
 
 ## How to reduce a BDD
 **Input**: A *bdd*.\
-**Output**: A reduced binary decision diagram *bdd'*
+**Output**: A reduced binary decision diagram *bdd'*\
 **Steps of the algorithm**:
 1. If *bdd* has more than two distinct leaves (one labeled T and one labeled F), remove duplicate leaves. Direct all edges that pointed to leaves
 to the remaining two leaves </li>
@@ -57,9 +68,12 @@ BDD under one ordering may require an exponential-size BDD under another orderin
 Find the best variable ordering is quite difficult (*NP-hard*), usually heuristic algorithms are used.
 
 ## How to apply operators to BDDs
-The power of BDDs is the ability to perform operations directly on two reduced BDDs. Given two **reduced** BDDs bdd<sub>1</sub>, bdd<sub>2</sub> and an operator *op*,
+The power of BDDs is the ability to perform operations directly on two reduced BDDs.
+
+Given two **reduced** BDDs bdd<sub>1</sub>, bdd<sub>2</sub> and an operator *op*,
 the algorithm **Apply** recursively constructs the BDD for <code>bdd<sub>1</sub> *op* bdd<sub>2</sub></code>.
-The algorithm is described as follows:\
+The algorithm is described as follows:
+
 **Input**: OBDDs bdd<sub>1</sub> for formula A<sub>1</sub> and bdd<sub>2</sub> for formula A<sub>2</sub> and an operator *op*.\
 **Output**: An OBDD for the formula <code>A<sub>1</sub> *op* A<sub>2</sub></code>.\
 **Steps of the algorithm**:
@@ -67,7 +81,7 @@ The algorithm is described as follows:\
 labeled by w<sub>1</sub> *op* w<sub>2</sub>.
 2) If the roots of bdd<sub>1</sub> and bdd<sub>2</sub> are labeled by the same atom *p*, return the following
    BDD:(a) the root is labeled by p; (b) the left sub-BDD is obtained by recursively
-   performing this algorithm on the left sub-BDDs of bdd<sub>1</sub> of bdd1 and bdd<sub>2</sub>; (c) the right
+   performing this algorithm on the left sub-BDDs of bdd<sub>1</sub> and bdd<sub>2</sub>; (c) the right
    sub-BDD is obtained by recursively performing this algorithm on the right sub
    BDDs of bdd<sub>1</sub> and bdd<sub>2</sub>.
 3) If the root of bdd<sub>1</sub> is labeled *p<sub>1</sub>* and the root of bdd<sub>2</sub> is labeled *p<sub>2</sub>* such that
@@ -84,18 +98,22 @@ labeled by w<sub>1</sub> *op* w<sub>2</sub>.
 
 ## How to run the app
 Firstly unzip the file <code>app.zip</code> in any locations of your computer. After this, you can open the *app* directory
-with any editor (i.e. Visual Studio Code).
+with any editor (i.e. Visual Studio Code) as shown below.
 
-The app can be launched with the <code>app.bat</code> file: type in the command line <code>app/bin/app.bat</code>.
-This command will launch the <code>Main</code> of the application.
+![vscode1](img/vscode1.PNG)
+
+The app can be launched with the <code>app.bat</code> (on windows) file: type in the command line <code>app/bin/app.bat</code>.
+This command will launch the <code>Main</code> of the application with the default input file.
 
 If you want to test your own formulas, you should create a file named <code>formulas.txt</code> (the name **must** be the same),
 write all the Boolean function you want and then just run <code>app.bat</code> again.
 
+![vscode2](img/vscode2.PNG)
+
 Input formulas are not checked, so here are some guidlines you should know before writing your own input:
 - Operators accepted: <code>||, &&, !, ^, =></code>
 - Precedence can be controlled using parenthesis <code>()</code>
-- Spaces between formulas, operators are accepted but not necessery
+- Spaces between formulas and operators are accepted but not necessery
 - The application is <code>case-sensitive</code> therefore <code>a</code> and <code>A</code> are treated as different variables
 - Do not leave empty lines between formulas
 
@@ -117,7 +135,7 @@ a ^ b
 ```
 When you create your custom <code>formulas.txt</code>, the program will ignore the standard file.
 
-Once the app finishes run, each **OBDD** will be generated inside the directory <code>generated/graphs</code>.
+Once the app finishes running, each **OBDD** will be generated inside the directory <code>generated/graphs</code>.
 At the beginning of each launch, the app will clean and rebuild the <code>generated</code> directory.
 
 The easiest way to represent a **BDD** is a <code>*.dot</code> file, if you want to get a clear image of the result, you can try
@@ -126,6 +144,8 @@ You just need to copy the code inside your <code>inputN.dot</code> and paste it 
 
 Note that your <code>.dot</code> files, will be named as <code>input1.dot, input2.dot, ..., inputN.dot</code>, this happens because the application
 creates one BDD for each line of the input file.
+
+![vscode3](img/vscode3.PNG)
 
 It is also possible to add command line argument before launching the program, the arguments accepted are:
 - ``--no-benchmark`` which ignores the standard benchmarks included in the project.
