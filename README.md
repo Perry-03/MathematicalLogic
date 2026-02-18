@@ -126,3 +126,9 @@ You just need to copy the code inside your <code>inputN.dot</code> and paste it 
 
 Note that your <code>.dot</code> files, will be named as <code>input1.dot, input2.dot, ..., inputN.dot</code>, this happens because the application
 creates one BDD for each line of the input file.
+
+It is also possible to add command line argument before launching the program, the arguments accepted are:
+- ``--no-benchmark`` which ignores the standard benchmarks included in the project.
+- ``--no-scalability`` which ignores the scalability tests.
+
+Please note that the source code is not available in the `app.zip`, but it is in the file `source-code.zip` or visiting my [GitHub](https://github.com/Perry-03/MathematicalLogic).

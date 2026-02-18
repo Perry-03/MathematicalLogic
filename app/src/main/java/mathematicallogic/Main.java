@@ -1,21 +1,24 @@
 package mathematicallogic;
-import mathematicallogic.bdd.BDDNode;
 import mathematicallogic.builder.BDDFactory;
 import mathematicallogic.formula.Formula;
-import mathematicallogic.formula.Var;
 import mathematicallogic.parser.FormulaParser;
 import mathematicallogic.util.Benchmark;
-import mathematicallogic.util.Utils;
 
 import java.io.*;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class Main {
 
     public static void main(String... args) throws FileNotFoundException {
+        boolean runBenchmarks = true ;
+        boolean runScalability = true ;
+
+        for (String arg : args) {
+            if ("--no-benchmark".equals(arg)) runBenchmarks = false ;
+            if ("--no-scalability".equals(arg)) runScalability = false ;
+        }
+
         System.out.println("=== WARMUP ===") ;
         for (int i = 0; i < 5; i++) {
             Benchmark.warmup() ;
@@ -45,8 +48,11 @@ public class Main {
             );
         }
 
+        System.out.println() ;
+
         // formule generate random + test scalabilità pesante
-        Benchmark.auto_generate() ;
+        if (runBenchmarks) Benchmark.standard_benchmarks() ;
+        if  (runScalability) Benchmark.scalability_test() ;
 
         // pulisco la cartella
         String graphs_path = "generated/graphs" ;
@@ -54,6 +60,7 @@ public class Main {
         if (graphs_dir.exists())
             for (File f : Objects.requireNonNull(graphs_dir.listFiles()))
                 f.delete() ;
+
         // export to .dot
         Benchmark.export(graphs_path) ;
 
