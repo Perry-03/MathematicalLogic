@@ -19,7 +19,6 @@ public class Main {
             if ("--no-scalability".equals(arg)) runScalability = false ;
         }
 
-        System.out.println("=== WARMUP ===") ;
         for (int i = 0; i < 5; i++) {
             Benchmark.warmup() ;
             BDDFactory.clear_cache() ;
@@ -36,7 +35,7 @@ public class Main {
                 .lines()
                 .toList() ;
 
-        System.out.println("=== INPUT FORMULAS BENCHMARK ===\n") ;
+        System.out.println("=== INPUT FORMULAS BENCHMARK ===") ;
         for (int i = 0; i < lines.size(); i++) {
             String name =  lines.get(i) ;
             Formula formula = FormulaParser.parse(name) ;

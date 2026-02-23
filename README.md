@@ -1,5 +1,10 @@
 # BINARY DECISION DIAGRAMS (BDD)
 
+## Table of Contents
+- [What is a BDD?](#what-is-a-bdd)
+- [How to run the app](#how-to-run-the-app)
+- [Requirements](#requirements)
+
 ## What is a BDD?
 A BDD is a data structure used to represent a Boolean function as a *rooted, directed acyclic* graph.
 Non-terminal nodes are called **decision nodes**, labelled with a Boolean variable. Each decision node has two outgoing edges 
@@ -45,6 +50,7 @@ The resulting *Reduced Binary Decision Diagram* for <code>a || b</code> is shown
 
 <a id="a-and-b-reduced"></a>
 ![A or B reduced](img/aORbREDUCED.png)\
+
 The same reduction principle can be applied to the BDD representing [A and B](#a-and-b). Since the AND function evaluates to *True* only
 when both variables are assigned *True*, the resulting **reduced** BDD is shown below.
 
@@ -71,7 +77,7 @@ Find the best variable ordering is quite difficult (*NP-hard*), usually heuristi
 The power of BDDs is the ability to perform operations directly on two reduced BDDs.
 
 Given two **reduced** BDDs bdd<sub>1</sub>, bdd<sub>2</sub> and an operator *op*,
-the algorithm **Apply** recursively constructs the BDD for <code>bdd<sub>1</sub> *op* bdd<sub>2</sub></code>.
+the algorithm named `Apply` recursively constructs the BDD for <code>bdd<sub>1</sub> *op* bdd<sub>2</sub></code>.
 The algorithm is described as follows:
 
 **Input**: OBDDs bdd<sub>1</sub> for formula A<sub>1</sub> and bdd<sub>2</sub> for formula A<sub>2</sub> and an operator *op*.\
@@ -95,29 +101,39 @@ labeled by w<sub>1</sub> *op* w<sub>2</sub>.
    recursively performing this algorithm on bdd<sub>1</sub> and on the left (respectively, right)
    sub-BDD of bdd<sub>2</sub>.
 
-
 ## How to run the app
-Firstly unzip the file <code>app.zip</code> in any locations of your computer. After this, you can open the *app* directory
+There are two ways to run the app: running the [deployment version](#deploy) or the [source code](#source-code).
+For a quick test of the application, the deployment version is recommended.
+
+<a id="deploy"></a>
+### Deploy version
+First, unzip the file <code>app.zip</code> in any location of your computer. After this, you can open the *app* directory
 with any editor (i.e. Visual Studio Code) as shown below.
 
 ![vscode1](img/vscode1.PNG)
 
-The app can be launched with the <code>app.bat</code> (on windows) file: type in the command line <code>app/bin/app.bat</code>.
-This command will launch the <code>Main</code> of the application with the default input file.
+The app can be launched with the <code>app.bat</code> (on Windows) file: type in the command line <code>app/bin/app.bat</code>.
+In case you run on Linux, you must run the `app.sh` file located in the same directory as the `app.bat` file. Then just run `app/bin/app`.
+This commands will launch the <code>Main</code> of the application with the default input file.
 
+It is also possible to add command line arguments before launching the program, the arguments accepted are:
+- ``--no-benchmark`` which ignores the standard benchmarks included in the project.
+- ``--no-scalability`` which ignores the scalability tests.
+
+### Input
 If you want to test your own formulas, you should create a file named <code>formulas.txt</code> (the name **must** be the same),
-write all the Boolean function you want and then just run <code>app.bat</code> again.
+write all the Boolean function you want and then just run <code>app.bat</code> (or `app`) again.
 
 ![vscode2](img/vscode2.PNG)
 
-Input formulas are not checked, so here are some guidlines you should know before writing your own input:
-- Operators accepted: <code>||, &&, !, ^, =></code>
+Input formulas are not checked, so here are some guidelines you should know before writing your own input:
+- Operators accepted: <code>||, &&, !, ^, =></code> (OR, AND, NOT, XOR, IMPLIES)
 - Precedence can be controlled using parenthesis <code>()</code>
-- Spaces between formulas and operators are accepted but not necessery
+- Spaces between formulas and operators are accepted but not necessary
 - The application is <code>case-sensitive</code> therefore <code>a</code> and <code>A</code> are treated as different variables
 - Do not leave empty lines between formulas
 
-For example, whether you **do not** create your own <code>formulas.txt</code> the program will run with this standard file:
+For example, if you **do not** create your own <code>formulas.txt</code> the program will run with this standard file as input:
 ```text
 a || !a
 (a => b) => ((b => c) => (a => c))
@@ -135,7 +151,11 @@ a ^ b
 ```
 When you create your custom <code>formulas.txt</code>, the program will ignore the standard file.
 
-Once the app finishes running, each **OBDD** will be generated inside the directory <code>generated/graphs</code>.
+Formulas are parsed using [ANTLR4](https://github.com/antlr/antlr4), an external library.
+
+<a id="output"></a>
+### Output
+Once the app has finished running, each **OBDD** will be generated inside the directory <code>generated/graphs</code>.
 At the beginning of each launch, the app will clean and rebuild the <code>generated</code> directory.
 
 The easiest way to represent a **BDD** is a <code>*.dot</code> file, if you want to get a clear image of the result, you can try
@@ -147,8 +167,33 @@ creates one BDD for each line of the input file.
 
 ![vscode3](img/vscode3.PNG)
 
-It is also possible to add command line argument before launching the program, the arguments accepted are:
-- ``--no-benchmark`` which ignores the standard benchmarks included in the project.
-- ``--no-scalability`` which ignores the scalability tests.
+<a id="source-code"></a>
+### Source code
+Please note that the source code is not available in the `app.zip`, but you can access it by unzipping
+the file `source-code.zip` or visiting my [GitHub](https://github.com/Perry-03/MathematicalLogic).
 
-Please note that the source code is not available in the `app.zip`, but it is in the file `source-code.zip` or visiting my [GitHub](https://github.com/Perry-03/MathematicalLogic).
+After the source code have been unzipped (or the repository cloned), you should open a terminal or an editor (such as Visual Studio Code)
+and run the project with this command: `gradlew.bat run` (on Windows) or `./gradlew run` (on Linux).
+
+Please note that on Linux, `gradlew` may not have permits to run, if this is the case then use this commands:
+```text
+    chmod +x gradlew
+    ./gradlew run
+```
+Of course as with the [deployment version](#deploy), you can add the same args to the command line.
+
+### Input (source code)
+Since you are using `gradle`, the root directory is different from using the deployment version. If you want to test your own
+formulas you should edit the built-in file `app/src/main/resources/formulas.txt`.
+
+Rules and laws to create a good input file are the same as in the [deploy version](#deploy).
+
+### Output (source code)
+As said before, we have different root directory from deployment version. The output will be situated in `app/generated/graphs`.
+
+Once the app ends running, you can interpret the output using [deployment version guide](#output).
+
+## Requirements
+To run this app you need at least Java 17+. You can check your current java version by running the following command:
+
+<code>java --version</code>
