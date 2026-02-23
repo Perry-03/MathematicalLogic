@@ -35,7 +35,7 @@ public class Benchmark {
     
     public static void standard_benchmarks() {
         // default benchmarks
-        System.out.println("\n=== BENCHMARK ===\n") ;
+        System.out.println("\n=== BENCHMARK ===") ;
         benchmark("p OR q", Benchmark::or1) ;
         benchmark("(p OR q) OR r", Benchmark::or2) ;
         benchmark("p AND q", Benchmark::and1) ;
@@ -49,7 +49,7 @@ public class Benchmark {
 
     public static void scalability_test() {
         // SCALABILITY TEST con XOR
-        System.out.println("\n=== SCALABILITY TEST ===\n") ;
+        System.out.println("\n=== SCALABILITY TEST ===") ;
         // ogni XOR raddoppia circa il numero di nodi
         benchmark("10 XOR vars", () -> xor_chain(10)) ;
         benchmark("20 XOR vars", () -> xor_chain(20)) ;

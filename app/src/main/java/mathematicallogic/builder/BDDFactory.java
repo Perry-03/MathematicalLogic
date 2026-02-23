@@ -23,14 +23,17 @@ public class BDDFactory {
     }
 
     public static BDDNode ast_to_bdd(Formula f) {
-        return switch (f) {
-            case Var var -> check_unique_table(var.getName(), FALSE_LEAF, TRUE_LEAF) ;
-            case Or or   -> apply(ast_to_bdd(or.getLeft()), ast_to_bdd(or.getRight()), BOOL_OPERATIONS.get("||")) ;
-            case And and -> apply(ast_to_bdd(and.getLeft()), ast_to_bdd(and.getRight()), BOOL_OPERATIONS.get("&&")) ;
-            case Xor xor -> apply(ast_to_bdd(xor.getLeft()), ast_to_bdd(xor.getRight()), BOOL_OPERATIONS.get("^")) ;
-            case Not not -> apply_neg(ast_to_bdd(not.getFormula())) ;
-            default -> throw new UnsupportedOperationException("Not supported yet.") ;
-        } ;
+        if (f instanceof Var var)
+            return check_unique_table(var.getName(), FALSE_LEAF, TRUE_LEAF) ;
+        else if (f instanceof Or or)
+            return apply(ast_to_bdd(or.getLeft()), ast_to_bdd(or.getRight()), BOOL_OPERATIONS.get("||")) ;
+        else if (f instanceof And and)
+            return apply(ast_to_bdd(and.getLeft()), ast_to_bdd(and.getRight()), BOOL_OPERATIONS.get("&&")) ;
+        else if (f instanceof Xor xor)
+            return apply(ast_to_bdd(xor.getLeft()), ast_to_bdd(xor.getRight()), BOOL_OPERATIONS.get("^")) ;
+        else if (f instanceof Not not)
+            return apply_neg(ast_to_bdd(not.getFormula())) ;
+        throw new UnsupportedOperationException("Not supported yet.") ;
     }
 
     public static BDDNode apply(BDDNode u, BDDNode v, String op) {
