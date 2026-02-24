@@ -101,6 +101,56 @@ labeled by w<sub>1</sub> *op* w<sub>2</sub>.
    recursively performing this algorithm on bdd<sub>1</sub> and on the left (respectively, right)
    sub-BDD of bdd<sub>2</sub>.
 
+## Implementation
+### From AST to BDD: `ast_to_bdd`
+This method takes a `Formula` and recursively builds the corresponding `BDDNode` (representing a BDD instance). 
+The base case is a `Var` node (a single Boolean variable), in which a BDD node is created with `FALSE_LEAF` as the low child
+and `TRUE_LEAF` as the high child.
+
+On the other hand, for composite formulas (`Or`, `And`, `Xor`) the method calls itself on both sub-formulas and then calls `apply` with the
+right operator obtained from `BOOL_OPERATION`. The negation of a formula (`Not`) is treated with a dedicated method, `apply_neg`, which simply
+swaps the terminal nodes recursively.
+
+![ast_to_bdd](img/ast_to_bdd.PNG)
+
+`BOOL_OPERATIONS` is a static field initialized as follows:
+```java
+    static {
+            BOOL_OPERATIONS.put("&&", (a,b) -> a && b) ;
+            BOOL_OPERATIONS.put("||", (a,b) -> a || b) ;
+            BOOL_OPERATIONS.put("^",  (a,b) -> a ^ b)  ;
+       }
+```
+
+### Apply and Reduce: `apply`
+The `apply` method implements both *Apply* and *Reduce* procedures at once. Given two nodes `u` and `v` and a Boolean operator, it
+constructs the reduced BDD for `u op v`.
+
+![apply](img/apply.PNG)
+The algorithms proceeds as follows:
+1) If both `u` and `v` are leaves, the result is the terminal (`TRUE_LEAF` or `FALSE_LEAF`) node corresponding to `u.value op v.value`
+2) The variable `x` is selected applying variable ordering (lexicographical order in this case) to `u` and `v`. If one of the two nodes is a leaf, the variable of the other is used
+3) For each of `u` and `v`, the low and the high cofactors (respecting `x`) are computed with `cofactor_low` and `cofactor_high`.
+    The cofactor of a node `n` respecting `x` returns `n.low` (or `n.high`) if `n.var == x`, or `n` itself otherwise. This is the *Shannon expansion*
+4) `apply` is called recursively on the low cofactors and then on the high cofactors
+5) Before creating a new node, two reduction rules are applied:
+   - if `low == high` (by reference), the node is the same and `low` is returned
+   - otherwise, the method `check_unique_table` is called. If a node with same `<var, low, high>` (has a `Triple`) already exists in the `UNIQUE_TABLE`, the cached node is returned
+   instead of creating a new one
+
+### The Unique Table
+`UNIQUE_TABLE` is a cache table that maps each `<var, low, high>` triple to its unique BDD instance, in order to find quickly isomorphic subgraphs.
+It also avoids creating duplicate nodes and it speeds up computation. 
+
+![unique_table](img/check_unique_table.PNG)
+
+Because the unique table stores BDD nodes across calls, `clear_cache()` should be called between indipendent BDD constructions.
+
+```java
+    private static final HashMap<Triple, BDDNode> UNIQUE_TABLE = new HashMap<>() ;
+    public static void clear_cache() { UNIQUE_TABLE.clear() ; }
+```
+
 ## How to run the app
 There are two ways to run the app: running the [deployment version](#deploy) or the [source code](#source-code).
 For a quick test of the application, the deployment version is recommended.
