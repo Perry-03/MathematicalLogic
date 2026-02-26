@@ -126,7 +126,7 @@ swaps the terminal nodes recursively.
 The `apply` method implements both *Apply* and *Reduce* procedures at once. Given two nodes `u` and `v` and a Boolean operator, it
 constructs the reduced BDD for `u op v`.
 
-![apply](img/apply.PNG)
+![apply](img/apply.PNG)\
 The algorithms proceeds as follows:
 1) If both `u` and `v` are leaves, the result is the terminal (`TRUE_LEAF` or `FALSE_LEAF`) node corresponding to `u.value op v.value`
 2) The variable `x` is selected applying variable ordering (lexicographical order in this case) to `u` and `v`. If one of the two nodes is a leaf, the variable of the other is used
