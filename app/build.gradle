@@ -31,9 +31,8 @@ generateGrammarSource {
     arguments += [
             '-visitor',
             '-long-messages',
-            '-package', 'mathematicallogic.parser'  // Specifica il package QUI
+            '-package', 'mathematicallogic.parser'
     ]
-    // Output nella root senza sottocartelle
     outputDirectory = file("${buildDir}/generated-src/antlr/main")
 }
 
